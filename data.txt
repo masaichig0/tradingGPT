@@ -1,0 +1,27 @@
+Price data
+    inside price_data.py
+    class Data:
+        process_data_1: More indicators but somehow I only get 600 data point.
+        process_data_2: Less indicator but I get all the data point.
+
+Financial Data
+    inside financial_data.py
+    class FinancialDataFinnHub
+        Annual report data list: attribute .bs_list_a, .ic_list_a, .cf_list_a
+            Contains as much data as I can extract
+        Quarterly report data list: attribute .bs_list_q, .ic_list_q, .cf_list_a
+            Contains last 4 years (16 quarters) documents
+        Methods:
+            company_info:
+            company_news: Last 30 days.
+            insider: Last 1 year of insider trading.
+            basic_financial:
+            earning_surprises:
+
+    class FinancialDataYahoo
+        Methods:
+            quote_table:
+            validation:
+            stats:
+            holders:
+            analyst_info
