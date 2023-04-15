@@ -24,7 +24,7 @@ class Data:
     def preprocess_data_1(self, data_for="Adj Close", SMA=True, sma5=5, sma10=10, sma20=20,
                         MACD=True, short_span=8, long_span=17, macd_span=9,
                         RSI=True, timeperiod=14, SOI=True, slowk_period=3, fastk_period=14,
-                        Bband=True):
+                        Bband=False):
         """
         data_for: pick one of them ["Adj Close", "Open", "high", "Low"]
         """
@@ -135,12 +135,10 @@ class Data:
 
             df["BBuperp"], df["BBmidp"], df["BBlowp"] = ta.BBANDS(df[percent], matype=MA_Type.T3)
 
-        df.dropna(inplace=True)
-
         return df
 
-    def process_data_2(self, OBV=True, SMA=True, sma_short=15, sma_long=50,
-                      MACD=True, short_span=12, long_span=26, macd_span=9,
+    def process_data_2(self, OBV=True, SMA=True, sma_short=10, sma_long=50,
+                      MACD=True, short_span=8, long_span=17, macd_span=9,
                       RSI=True, timeperiod=14, SOI=True, fastk_period=14):
         """
         Add the indicators for later data manupulation.
@@ -172,25 +170,29 @@ class Data:
         df["Change"] = df["Close"].diff()
         # Show the direction of the movement
         df = df.dropna()
+        df.reset_index(inplace=True)
         df["Direction"] = None
         for i in range(len(df)):
             if df["Change"][i] > 0:
-                df["Direction"][i] = "UP"
+                df.loc[i, "Direction"] = "UP"
             elif df["Change"][i] < 0:
-                df["Direction"][i] = "DOWN"
+                df.loc[i, "Direction"] = "DOWN"
             else:
-                df["Direction"][i] = "SAME"
+                df.loc[i, "Direction"] = "SAME"
 
             # OBV
         if OBV:
             df["OBV"] = 0
             for i in range(len(df)):
-                if df["Direction"][i] == "UP":
-                    df["OBV"][i] = df["Volume"][i] + df["OBV"][i - 1]
-                elif df["Direction"][i] == "DOWN":
-                    df["OBV"][i] = df["OBV"][i - 1] - df["Volume"][i]
-                else:
-                    df["OBV"][i] = 0 + df["OBV"][i - 1]
+                try:
+                    if df["Direction"][i] == "UP":
+                        df.loc[i, "OBV"] = df["Volume"][i] + df["OBV"][i - 1]
+                    elif df["Direction"][i] == "DOWN":
+                        df.loc[i, "OBV"] = df["OBV"][i - 1] - df["Volume"][i]
+                    else:
+                        df.loc[i, "OBV"] = 0 + df["OBV"][i - 1]
+                except:
+                    df.loc[i, "OBV"] = df["Volume"][i]
 
         # SMA
         if SMA:
@@ -221,5 +223,7 @@ class Data:
                                                 low=df["Low"],
                                                 close=df["Close"],
                                                 fastk_period=fastk_period)
+        return df.dropna()
 
-        return df
+
+

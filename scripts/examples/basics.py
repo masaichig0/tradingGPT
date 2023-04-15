@@ -1,4 +1,5 @@
-# Use LLM class
+"""Use LLM class to create simple chain. Input one keyword then the result will be next input to generate next content.
+I customize the example on the documentation to add few more layers of chain. """
 
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
@@ -46,9 +47,15 @@ def llm_chain(product_name):
     chain_three = LLMChain(llm=chat, prompt=third_prompt)
 
     forth_prompt = PromptTemplate(input_variables=['business_plan'],
-                                  template="Write a business plan step-by-step. We are start-up with 3 employee: {business_plan}")
+                                  template="Write a business plan step-by-step. We are start-up with 3 employee:\
+                                   {business_plan}")
     chain_four = LLMChain(llm=chat, prompt=forth_prompt)
     from langchain.chains import SimpleSequentialChain
     overall_chain = SimpleSequentialChain(chains=[chain, chain_two, chain_three, chain_four], verbose=True)
     return overall_chain.run(product_name)
+
+
+product = "Stock market prediction tool"
+llm_chain(product)
+
 

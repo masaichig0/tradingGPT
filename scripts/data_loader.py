@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Obtain price history data from Yahoo Finance and add indicators
-#nvda = Data("NVDA", 50)
+nvda = Data("NVDA", 50)
 #df = nvda.preprocess_data_1()
-#df2 = nvda.process_data_2()
-
+df2 = nvda.process_data_2()
+print(df2)
 
 # Obtain financial data from Finnhub
 #finnhub_api_key = os.getenv("FINHUB_API_KEY")
@@ -21,8 +21,8 @@ load_dotenv()
 
 
 # Obtain financial data from Yahoo finance
-nvda_yahoo = FinancialDataYahoo("NVDA")
-analyst_info = nvda_yahoo.analyst_info
-print(analyst_info)
+#nvda_yahoo = FinancialDataYahoo("NVDA")
+#analyst_info = nvda_yahoo.analyst_info
+#print(analyst_info)
 
 
