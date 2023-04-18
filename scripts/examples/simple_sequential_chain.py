@@ -14,7 +14,7 @@ llm = OpenAI(temperature=0)
 template = """You are a brilliant swing trader and excellent AI assistant to help human to make money with trading. 
 I'm going to pass you following information, and you will analyze those information to make decision to maximize profit.
 Information I provide:
-{Historical Price Data with Indicator} 
+{Historical Price Data with Indicators} 
 {Financial Statements}: Annual report and quarterly report.
 {Current Company Status}
 {Recent Company news}

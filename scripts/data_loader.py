@@ -1,4 +1,5 @@
 from price_data import *
+import pandas as pd
 import os
 import finnhub
 from financial_data import FinancialDataFinnHub, FinancialDataYahoo
@@ -9,7 +10,8 @@ load_dotenv()
 nvda = Data("NVDA", 50)
 #df = nvda.preprocess_data_1()
 df2 = nvda.process_data_2()
-print(df2)
+df2 = df2[-100:]
+df2.to_csv(".\\Docs\\CSV_files\\nvda_data.csv", index=False)
 
 # Obtain financial data from Finnhub
 #finnhub_api_key = os.getenv("FINHUB_API_KEY")
