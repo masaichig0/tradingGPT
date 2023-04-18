@@ -31,7 +31,7 @@ class FinancialDataFinnHub:
         Last 5 days of news.
         :return: List of dict Recent News
         """
-        new_date = self.today - timedelta(days=2)
+        new_date = self.today - timedelta(days=1)
         _from = new_date.strftime("%Y-%m-%d")
         news =  self.set_client.company_news(self.symbol, _from=_from, to=self.today)
         dataframe = []
@@ -86,55 +86,20 @@ class FinancialDataFinnHub:
         :return: Tuple of report lists for balance sheet, income statement, and cash flow.
         """
         report = self.set_client.financials_reported(symbol=self.symbol, freq=freq)
-        years = []
-        bss = []
-        ics = []
-        cfs = []
-        for i in range(len(report['data'])):
-            year = str(report['data'][i]['year'])
-            years.append(year)
-            bs = report['data'][i]['report']['bs']
-            bss.append(bs)
-            ic = report['data'][i]['report']['ic']
-            ics.append(ic)
-            cf = report['data'][i]['report']['cf']
-            cfs.append(cf)
 
-        years = []
-        bss = []
-        ics = []
-        cfs = []
-        for i in range(len(report['data'])):
-            year = str(report['data'][i]['year'])
-            years.append(year)
-            bs = report['data'][i]['report']['bs']
-            bss.append(bs)
-            ic = report['data'][i]['report']['ic']
-            ics.append(ic)
-            cf = report['data'][i]['report']['cf']
-            cfs.append(cf)
+        years = [str(report['data'][i]['year']) for i in range(len(report['data']))]
+        bss = [report['data'][i]['report']['bs'] for i in range(len(report['data']))]
+        ics = [report['data'][i]['report']['ic'] for i in range(len(report['data']))]
+        cfs = [report['data'][i]['report']['cf'] for i in range(len(report['data']))]
 
-        bs_docs = {}
-        ic_docs = {}
-        cf_docs = {}
-        for i in range(len(years)):
-            bs_docs[years[i]] = bss[i]
-            ic_docs[years[i]] = ics[i]
-            cf_docs[years[i]] = cfs[i]
+        bs_docs = {years[i]: bss[i] for i in range(len(years))}
+        ic_docs = {years[i]: ics[i] for i in range(len(years))}
+        cf_docs = {years[i]: cfs[i] for i in range(len(years))}
 
-        # In[218]:
+        bs_dfs = [pd.DataFrame(bs_docs[years[i]]) for i in range(len(years))]
+        ic_dfs = [pd.DataFrame(ic_docs[years[i]]) for i in range(len(years))]
+        cf_dfs = [pd.DataFrame(cf_docs[years[i]]) for i in range(len(years))]
 
-        bs_dfs = []
-        ic_dfs = []
-        cf_dfs = []
-        for i in range(len(years)):
-            # print(f"Number of rows: {len(bs_docs[years[i]])}")
-            df_bs = pd.DataFrame(bs_docs[years[i]])
-            bs_dfs.append(df_bs)
-            df_ic = pd.DataFrame(ic_docs[years[i]])
-            ic_dfs.append(df_ic)
-            df_cf = pd.DataFrame(cf_docs[years[i]])
-            cf_dfs.append(df_cf)
         return bs_dfs, ic_dfs, cf_dfs
 
 
