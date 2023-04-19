@@ -223,7 +223,10 @@ class Data:
                                                 low=df["Low"],
                                                 close=df["Close"],
                                                 fastk_period=fastk_period)
-        return df.dropna()
+
+        df = df.dropna()
+        df = df.reset_index(drop=True)
+        return df
 
 
 
