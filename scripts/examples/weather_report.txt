@@ -1,0 +1,3 @@
+Weather Report for Vancouver Today:
+
+Cloudy with periods of rain. Low 47F. Winds light and variable. Chance of rain 90%. Rainfall around a quarter of an inch. Humidity89%. UV Index0 of 10.

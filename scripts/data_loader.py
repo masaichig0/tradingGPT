@@ -23,8 +23,14 @@ df2.to_csv(".\\Docs\\CSV_files\\nvda_data.csv", index=False)
 
 
 # Obtain financial data from Yahoo finance
-#nvda_yahoo = FinancialDataYahoo("NVDA")
-#analyst_info = nvda_yahoo.analyst_info
-#print(analyst_info)
+nvda_yahoo = FinancialDataYahoo("NVDA")
+validation = nvda_yahoo.validation
+quote_table = nvda_yahoo.quote_table
+stats = nvda_yahoo.stats
+analyst_info = nvda_yahoo.analyst_info
 
+print(f"Validation: \n{validation}")
+print(f"Quote table: \n{quote_table}")
+print(f"Stats: \n{stats}")
+print(f"Analyst info: \n{analyst_info}")
 

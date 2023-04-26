@@ -6,9 +6,10 @@ from talib import MA_Type
 
 
 class Data:
-    def __init__(self, symbol, length):
+    def __init__(self, symbol, length, freq="1D"):
         self.symbol = symbol
         self.length = length
+        self.freq = freq
         self.df = self.get_data()
 
     # function of obtaining data
@@ -19,15 +20,20 @@ class Data:
 
         yf.pdr_override()
         df = pdr.data.get_data_yahoo(self.symbol, start=start, end=end)
+        if self.freq == "3D" or self.freq == "1W":
+            df = df.resample(self.freq).agg({'Open': 'first', 'High': 'max', 'Low': 'min', 'Close': 'last',
+                                             'Adj Close': 'last', 'Volume': 'sum'})
         return df
 
+    @property
     def preprocess_data_1(self, data_for="Adj Close", SMA=True, sma5=5, sma10=10, sma20=20,
                         MACD=True, short_span=8, long_span=17, macd_span=9,
-                        RSI=True, timeperiod=14, SOI=True, slowk_period=3, fastk_period=14,
+                        RSI=True, timeperiod=14, SOI=True, slowk_period=5, fastk_period=14,
                         Bband=False):
         """
         data_for: pick one of them ["Adj Close", "Open", "high", "Low"]
         """
+
         df = self.df.copy()
         # Fill the zero value on open price to previous closing price
         for i, open_price in enumerate(df["Open"]):
@@ -137,9 +143,10 @@ class Data:
 
         return df
 
-    def process_data_2(self, OBV=True, SMA=True, sma_short=10, sma_long=50,
+    @property
+    def preprocess_data_2(self, OBV=True, SMA=True, sma_short=10, sma_long=50,
                       MACD=True, short_span=8, long_span=17, macd_span=9,
-                      RSI=True, timeperiod=14, SOI=True, fastk_period=14):
+                      RSI=True, timeperiod=14, SOI=True, slowk_period=5, fastk_period=14):
         """
         Add the indicators for later data manupulation.
 
@@ -163,7 +170,6 @@ class Data:
             fastk_period: %K period. default is 14.
         """
         # Get the dataset and make a copy of it.
-
         df = self.df.copy()
 
         # Difference in the closing price each day
@@ -222,6 +228,7 @@ class Data:
             df["SlowK"], df["SlowD"] = ta.STOCH(high=df["High"],
                                                 low=df["Low"],
                                                 close=df["Close"],
+                                                slowk_period=slowk_period,
                                                 fastk_period=fastk_period)
 
         df = df.dropna()

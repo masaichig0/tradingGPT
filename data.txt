@@ -1,8 +1,8 @@
 Price data
     inside price_data.py
     class Data:
-        process_data_1: More indicators but somehow I only get 600 data point.
-        process_data_2: Less indicator but I get all the data point.
+        Get Historical price data from Yahoo finance. 
+        Add indicators to the historical price data. 
 
 Financial Data
     inside financial_data.py

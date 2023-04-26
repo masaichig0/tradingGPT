@@ -100,6 +100,11 @@ class FinancialDataFinnHub:
         ic_dfs = [pd.DataFrame(ic_docs[years[i]]) for i in range(len(years))]
         cf_dfs = [pd.DataFrame(cf_docs[years[i]]) for i in range(len(years))]
 
+        for i, year in enumerate(years):
+            bs_dfs[i]["year"] = year
+            ic_dfs[i]['year'] = year
+            cf_dfs[i]['year'] = year
+
         return bs_dfs, ic_dfs, cf_dfs
 
 
