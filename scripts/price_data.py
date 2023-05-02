@@ -234,6 +234,149 @@ class Data:
         df = df.dropna()
         df = df.reset_index(drop=True)
         return df
+    
+    @property
+    def add_arrow(self):
+        df = self.preprocess_data_2.copy()
+        
+        df["MACD_Arrow"] = None
+        df["SMA_Arrow"] = None
+        df['Sto_Arrow'] = None
+        
+        
+        for i in range(len(df)):
+            if df.loc[i, 'MACD'] > df.loc[i, 'Signal Line']:
+                df.loc[i, 'MACD_Arrow'] = "UP"
+            elif df.loc[i, 'MACD'] < df.loc[i, 'Signal Line']:
+                df.loc[i, 'MACD_Arrow'] = "DOWN"
+    
+        for i in range(len(df)):
+            if df.loc[i, "SlowK"] > df.loc[i, 'SlowD']:
+                df.loc[i, 'Sto_Arrow'] = "UP"
+            elif df.loc[i, "SlowK"] < df.loc[i, 'SlowD']:
+                df.loc[i, 'Sto_Arrow'] = "DOWN"
+    
+        for i in range(len(df)):
+            if df.loc[i, "Adj Close"] > df.loc[i, 'SMA/short']:
+                df.loc[i, 'SMA_Arrow'] = "UP"
+            elif df.loc[i, "Adj Close"] < df.loc[i, 'SMA/short']:
+                df.loc[i, 'SMA_Arrow'] = "DOWN"
+                
+        return df[['Date', 'Direction', 'Low', 'Adj Close', 'High', 'SMA_Arrow', 'MACD_Arrow', 'Sto_Arrow', 'RSI', 'OBV']]
+    
+from datetime import timedelta
+    
+class DataMin(Data):
+    def __init__(self, symbol, length, freq='1m'):
+        self.symbol = symbol
+        self.length = length
+        self.freq = freq
+        self.df = self.get_data()
 
+    # function of obtaining data
+    def get_data(self):
+        now = dt.datetime.now()
+        start = (now - timedelta(days=self.length)).strftime("%Y-%m-%d")
+        end = now.strftime("%Y-%m-%d")
 
+        yf.pdr_override()
+        df = pdr.data.get_data_yahoo(self.symbol, interval='1m', start=start, end=end)
+        if self.freq != "1m":
+            df = df.resample(self.freq).agg({'Open': 'first', 'High': 'max', 'Low': 'min', 'Close': 'last',
+                                             'Adj Close': 'last', 'Volume': 'sum'})
+        return df.dropna()
 
+    @property
+    def add_arrow(self):
+        df = self.preprocess_data_2.copy()
+        
+        df["MACD_Arrow"] = None
+        df["SMA_Arrow"] = None
+        df['Sto_Arrow'] = None
+        
+        
+        for i in range(len(df)):
+            if df.loc[i, 'MACD'] > df.loc[i, 'Signal Line']:
+                df.loc[i, 'MACD_Arrow'] = "UP"
+            elif df.loc[i, 'MACD'] < df.loc[i, 'Signal Line']:
+                df.loc[i, 'MACD_Arrow'] = "DOWN"
+    
+        for i in range(len(df)):
+            if df.loc[i, "SlowK"] > df.loc[i, 'SlowD']:
+                df.loc[i, 'Sto_Arrow'] = "UP"
+            elif df.loc[i, "SlowK"] < df.loc[i, 'SlowD']:
+                df.loc[i, 'Sto_Arrow'] = "DOWN"
+    
+        for i in range(len(df)):
+            if df.loc[i, "Adj Close"] > df.loc[i, 'SMA/short']:
+                df.loc[i, 'SMA_Arrow'] = "UP"
+            elif df.loc[i, "Adj Close"] < df.loc[i, 'SMA/short']:
+                df.loc[i, 'SMA_Arrow'] = "DOWN"
+                
+        return df[['Datetime', 'Direction', 'Low', 'Adj Close', 'High', 'SMA_Arrow', 'MACD_Arrow', 'Sto_Arrow', 'RSI', 'OBV']]
+    
+class DataHour(Data):
+    def __init__(self, symbol, length, freq='1h'):
+        self.symbol = symbol
+        self.length = length
+        self.freq = freq
+        self.df = self.get_data()
+
+    # function of obtaining data
+    def get_data(self):
+        now = dt.datetime.now()
+        start = (now - timedelta(days=self.length)).strftime("%Y-%m-%d")
+        end = now.strftime("%Y-%m-%d")
+
+        yf.pdr_override()
+        df = pdr.data.get_data_yahoo(self.symbol, interval='1h', start=start, end=end)
+        if self.freq != "1h":
+            df = df.resample(self.freq).agg({'Open': 'first', 'High': 'max', 'Low': 'min', 'Close': 'last',
+                                             'Adj Close': 'last', 'Volume': 'sum'})
+        return df.dropna()
+    
+    @property
+    def add_arrow(self):
+        df = self.preprocess_data_2.copy()
+        
+        df["MACD_Arrow"] = None
+        df["SMA_Arrow"] = None
+        df['Sto_Arrow'] = None
+        
+        
+        for i in range(len(df)):
+            if df.loc[i, 'MACD'] > df.loc[i, 'Signal Line']:
+                df.loc[i, 'MACD_Arrow'] = "UP"
+            elif df.loc[i, 'MACD'] < df.loc[i, 'Signal Line']:
+                df.loc[i, 'MACD_Arrow'] = "DOWN"
+    
+        for i in range(len(df)):
+            if df.loc[i, "SlowK"] > df.loc[i, 'SlowD']:
+                df.loc[i, 'Sto_Arrow'] = "UP"
+            elif df.loc[i, "SlowK"] < df.loc[i, 'SlowD']:
+                df.loc[i, 'Sto_Arrow'] = "DOWN"
+    
+        for i in range(len(df)):
+            if df.loc[i, "Adj Close"] > df.loc[i, 'SMA/short']:
+                df.loc[i, 'SMA_Arrow'] = "UP"
+            elif df.loc[i, "Adj Close"] < df.loc[i, 'SMA/short']:
+                df.loc[i, 'SMA_Arrow'] = "DOWN"
+                
+        return df[['index', 'Direction', 'Low', 'Adj Close', 'High', 'SMA_Arrow', 'MACD_Arrow', 'Sto_Arrow', 'RSI', 'OBV']]
+    
+class DataMonth(Data):
+    def __init__(self, symbol, length, freq='1mo'):
+        self.symbol = symbol
+        self.length = length
+        self.freq = freq
+        self.df = self.get_data()
+
+    # function of obtaining data
+    def get_data(self):
+        now = dt.datetime.now()
+        start = now.replace(now.year - self.length).strftime("%Y-%m-%d")
+        end = now.strftime("%Y-%m-%d")
+
+        yf.pdr_override()
+        df = pdr.data.get_data_yahoo(self.symbol, interval=self.freq, start=start, end=end)
+        return df.dropna()
